@@ -16,6 +16,7 @@ public class Player {
 	private ShapeRenderer shapeRenderer = MainClient.shapeRenderer;
 	
 	public void render(SpriteBatch batch) {
+		
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.rect(x, y, 32, 32);

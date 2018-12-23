@@ -66,9 +66,9 @@ public class MainServer {
 	    			} else if(packet.dir == 1) {
 	    				connection.x++;
 	    			} else if(packet.dir == 2) {
-	    				connection.y++;
-	    			} else if(packet.dir == 3) {
 	    				connection.y--;
+	    			} else if(packet.dir == 3) {
+	    				connection.y++;
 	    			}
 	    			
 	    			newPacket.id = connection.getID();

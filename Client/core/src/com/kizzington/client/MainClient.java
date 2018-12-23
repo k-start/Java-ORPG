@@ -2,11 +2,11 @@ package com.kizzington.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.jar.Pack200.Packer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.esotericsoftware.kryo.Kryo;
@@ -17,6 +17,7 @@ import com.kizzington.packets.*;
 
 public class MainClient extends ApplicationAdapter {
 	SpriteBatch batch;
+	OrthographicCamera cam;
 	static Client client;
 	static ShapeRenderer shapeRenderer;
 	Player player;
@@ -26,6 +27,10 @@ public class MainClient extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		cam = new OrthographicCamera();
+		cam.setToOrtho(true);
+		//cam.position.set(0, 0, 0);
+		cam.update();
 		
 		client = new Client();
 	    client.start();
@@ -114,6 +119,9 @@ public class MainClient extends ApplicationAdapter {
 	}
 	
 	public void update() {
+		cam.update();
+		batch.setProjectionMatrix(cam.combined);
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		player.update();
 	}
 	
