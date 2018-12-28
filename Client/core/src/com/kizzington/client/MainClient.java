@@ -46,6 +46,7 @@ public class MainClient extends Game {
 	    kryo.register(PacketPlayer.class);
 	    kryo.register(PacketLogin.class);
 	    kryo.register(PacketLogout.class);
+	    kryo.register(PacketRegister.class);
 	    
 	    try {
 			client.connect(5000, "127.0.0.1", 54555, 54777);
@@ -53,6 +54,16 @@ public class MainClient extends Game {
 	    
 	    client.addListener(new Listener() {
 	    	public void received (Connection c, Object object) {
+	    		
+	    		if(object instanceof PacketRegister) {
+	    			PacketRegister reg = (PacketRegister) object;
+	    			if(reg.response == 2) {
+	    				System.out.println("User already exists");
+	    			} else {
+	    				//successfull account creation, log in
+	    				game.setScreen(null);
+	    			}
+	    		}
 	    		
 	    		if(object instanceof PacketPlayer) {
 	    			PacketPlayer packet = (PacketPlayer) object;
@@ -137,5 +148,20 @@ public class MainClient extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+	}
+	
+	public static void register(String username, String password, String passwordConfirmation) {
+		if(password.equals(passwordConfirmation)) {
+			if(username.length() >= 3 && password.length() >= 3) {
+				PacketRegister reg = new PacketRegister();
+				reg.username = username;
+				reg.password = password;
+				client.sendTCP(reg);
+			} else {
+				System.out.println("Username/password too short");
+			}
+		} else {
+			System.out.println("Passwords dont match");
+		}
 	}
 }

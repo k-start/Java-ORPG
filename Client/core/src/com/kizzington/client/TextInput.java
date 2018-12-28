@@ -72,6 +72,10 @@ public class TextInput implements InputProcessor {
 		//field.draw(batch, 1);
 	}
 	
+	public String getText() {
+		return field.getText();
+	}
+	
 	public void giveFocus() {
 		stage.setKeyboardFocus(field);
 	}

@@ -1,5 +1,7 @@
 package com.kizzington.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -27,6 +29,7 @@ public class MainServer {
 	    kryo.register(PacketPlayer.class);
 	    kryo.register(PacketLogin.class);
 	    kryo.register(PacketLogout.class);
+	    kryo.register(PacketRegister.class);
 	    
 	    server.addListener(new Listener() {
 	    	public void connected(Connection c) {
@@ -35,6 +38,35 @@ public class MainServer {
 	    	
 	    	public void received (Connection c, Object object) {
 	    		ServerConnection connection = (ServerConnection)c;
+	    		
+	    		if(object instanceof PacketRegister) {
+	    			PacketRegister reg = (PacketRegister)object;
+	    			
+	    			File f = new File("data/users/" + reg.username);
+	    			if(f.exists() && !f.isDirectory()) { 
+	    			    System.out.println("User Exists");
+	    			    
+	    			    PacketRegister packet = new PacketRegister();
+						packet.response = 2;
+						c.sendTCP(packet);
+	    			} else {
+	    				System.out.println("Registering user " + reg.username);
+	    				UserFile newUser = new UserFile();
+	    				newUser.username = reg.username;
+	    				newUser.password = reg.password;
+	    				try {
+							newUser.saveUser();
+							
+							PacketRegister packet = new PacketRegister();
+							packet.response = 1;
+							c.sendTCP(packet);
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+	    			}
+	    		}
 	    		
 	    		if(object instanceof PacketLogin) {
 		    		for(int i = 0; i < server.getConnections().length; i++) {
