@@ -3,7 +3,7 @@ package com.kizzington.client;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,22 +15,28 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.kizzington.packets.*;
 
-public class MainClient extends ApplicationAdapter {
-	SpriteBatch batch;
-	OrthographicCamera cam;
-	static Client client;
-	static ShapeRenderer shapeRenderer;
-	Player player;
+public class MainClient extends Game {
+	private Game game;
+	private SpriteBatch batch;
+	private Player player;
+	private ArrayList<PlayerOther> players = new ArrayList<PlayerOther>();
 	
-	ArrayList<PlayerOther> players = new ArrayList<PlayerOther>();
+	public static Client client;
+	public static OrthographicCamera cam;
+	public static ShapeRenderer shapeRenderer;
 	
 	@Override
 	public void create () {
+		game = this;
+		
 		batch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
+		
 		cam = new OrthographicCamera();
-		cam.setToOrtho(true);
-		//cam.position.set(0, 0, 0);
+		cam.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.update();
+		
+		setScreen(new MainMenu(game));
 		
 		client = new Client();
 	    client.start();
@@ -44,9 +50,6 @@ public class MainClient extends ApplicationAdapter {
 	    try {
 			client.connect(5000, "127.0.0.1", 54555, 54777);
 		} catch (IOException e) { e.printStackTrace(); }
-	    
-	    shapeRenderer = new ShapeRenderer();
-	    player = new Player();
 	    
 	    client.addListener(new Listener() {
 	    	public void received (Connection c, Object object) {
@@ -95,8 +98,9 @@ public class MainClient extends ApplicationAdapter {
 	    	}
 	    });
 	    
-	    client.sendTCP(new PacketLogin());
+	    player = new Player();
 	    
+	    //client.sendTCP(new PacketLogin());
 	    
 	}
 
@@ -106,14 +110,17 @@ public class MainClient extends ApplicationAdapter {
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		super.render();
+		
 		batch.begin();
 		
-		for(PlayerOther p : players) {
+		/*for(PlayerOther p : players) {
 			p.render(batch);
-		}
+		}*/
 		
 		
-		player.render(batch);
+		//player.render(batch);
 		
 		batch.end();
 	}
@@ -122,7 +129,9 @@ public class MainClient extends ApplicationAdapter {
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		player.update();
+		
+		
+		//player.update();
 	}
 	
 	@Override

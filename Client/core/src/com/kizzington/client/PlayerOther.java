@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class PlayerOther {
 	int x, y = 0;
+	String username;
 	int id;
 	
 	private ShapeRenderer shapeRenderer = MainClient.shapeRenderer;

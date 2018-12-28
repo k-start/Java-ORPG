@@ -10,7 +10,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.kizzington.packets.PacketMove;
 
 public class Player {
-	int x, y = 0;
+	int x, y;
+	String username;
 	
 	private Client client = MainClient.client;
 	private ShapeRenderer shapeRenderer = MainClient.shapeRenderer;
