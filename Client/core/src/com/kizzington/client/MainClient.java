@@ -5,9 +5,14 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -28,6 +33,11 @@ public class MainClient extends Game {
 	
 	public boolean setGameScreen = false;
 	
+	
+	public static BitmapFont font;
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontParameter parameters;
+	
 	@Override
 	public void create () {
 		game = this;
@@ -38,6 +48,14 @@ public class MainClient extends Game {
 		cam = new OrthographicCamera();
 		cam.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.update();
+		
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
+		parameters = new FreeTypeFontParameter();
+		parameters.size = 12;
+		parameters.color = Color.WHITE;
+		font = generator.generateFont(parameters);
+		
+		final PlayerOther po = new PlayerOther();
 		
 		setScreen(new MainMenu(game));
 		
@@ -86,14 +104,16 @@ public class MainClient extends Game {
 	    			PacketPlayer packet = (PacketPlayer) object;
 	    			
 	    			if(packet.id != client.getID()) {
-	    				PlayerOther other = new PlayerOther();
+	    				PlayerOther other = new PlayerOther(po);
 	    				other.x = packet.x;
 	    				other.y = packet.y;
 	    				other.id = packet.id;
+	    				other.username = packet.name;
 	    				players.add(other);
 	    			} else {
 	    				player.x = packet.x;
 	    				player.y = packet.y;
+	    				player.username = packet.name;
 	    			}
 	    		}
 	    		

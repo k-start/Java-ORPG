@@ -3,9 +3,11 @@ package com.kizzington.client;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.esotericsoftware.kryonet.Client;
 import com.kizzington.packets.PacketMove;
 
@@ -14,14 +16,28 @@ public class Player {
 	String username;
 	
 	private Client client = MainClient.client;
-	private ShapeRenderer shapeRenderer = MainClient.shapeRenderer;
+	
+	private BitmapFont font = MainClient.font;
+	private GlyphLayout layout = new GlyphLayout();
+	
+	private Sprite playerSprite;
+	
+	public Player() {		
+		playerSprite = new Sprite(new Texture(Gdx.files.internal("player.png")));
+	}
 	
 	public void render(SpriteBatch batch) {
+		playerSprite.setX(x);
+		playerSprite.setY(y);
+		playerSprite.draw(batch);
 		
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(x, y, 32, 32);
-		shapeRenderer.end();
+		layout.setText(font, username);
+		int textWidth = (int)layout.width;
+		int textHeight = (int)layout.height;
+		
+		font.getData().setScale(1, -1);
+		font.setColor(Color.WHITE);
+		font.draw(batch, username, x + playerSprite.getWidth()/2 - textWidth/2, y - 10);
 	}
 	
 	public void update() {
