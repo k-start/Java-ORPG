@@ -18,12 +18,15 @@ import com.kizzington.packets.*;
 public class MainClient extends Game {
 	private Game game;
 	private SpriteBatch batch;
-	private Player player;
-	private ArrayList<PlayerOther> players = new ArrayList<PlayerOther>();
+	
+	public static Player player;
+	public static ArrayList<PlayerOther> players = new ArrayList<PlayerOther>();
 	
 	public static Client client;
 	public static OrthographicCamera cam;
 	public static ShapeRenderer shapeRenderer;
+	
+	public boolean setGameScreen = false;
 	
 	@Override
 	public void create () {
@@ -60,8 +63,22 @@ public class MainClient extends Game {
 	    			if(reg.response == 2) {
 	    				System.out.println("User already exists");
 	    			} else {
-	    				//successfull account creation, log in
-	    				game.setScreen(null);
+	    				//successful account creation, log in
+	    				game.setScreen(new MainMenu(game));
+	    			}
+	    		}
+	    		
+	    		if(object instanceof PacketLogin) {
+	    			PacketLogin log = (PacketLogin) object;
+	    			if(log.response == 1) {
+	    				//successful login
+	    				//setScreen(new GameScreen(game));
+	    				setGameScreen = true;
+	    				
+	    			} else if(log.response == 2){
+	    				System.out.println("User logged in already");
+	    			} else {
+	    				System.out.println("Incorrect username or password");
 	    			}
 	    		}
 	    		
@@ -111,8 +128,6 @@ public class MainClient extends Game {
 	    
 	    player = new Player();
 	    
-	    //client.sendTCP(new PacketLogin());
-	    
 	}
 
 	@Override
@@ -126,13 +141,6 @@ public class MainClient extends Game {
 		
 		batch.begin();
 		
-		/*for(PlayerOther p : players) {
-			p.render(batch);
-		}*/
-		
-		
-		//player.render(batch);
-		
 		batch.end();
 	}
 	
@@ -141,7 +149,10 @@ public class MainClient extends Game {
 		batch.setProjectionMatrix(cam.combined);
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		
-		
+		if(setGameScreen == true) {
+			setGameScreen = false;
+			setScreen(new GameScreen(game));
+		}
 		//player.update();
 	}
 	
@@ -163,5 +174,12 @@ public class MainClient extends Game {
 		} else {
 			System.out.println("Passwords dont match");
 		}
+	}
+	
+	public static void login(String username, String password) {
+		PacketLogin log = new PacketLogin();
+		log.username = username;
+		log.password = password;
+		client.sendTCP(log);
 	}
 }

@@ -7,4 +7,8 @@ public class ServerConnection extends Connection{
 	
 	public int x = 0;
 	public int y = 0;
+	
+	public boolean loggedIn = false;
+	
+	public UserFile user;
 }

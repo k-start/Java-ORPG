@@ -2,21 +2,27 @@ package com.kizzington.client;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class LoginMenu implements Screen, InputProcessor {
 	private Game game;
 	private SpriteBatch batch;
 	
-	private Sprite background, menuBorder, button, buttonHover, buttonClick;
+	private Sprite background, menuBorder, button, buttonHover, buttonClick, inputField;
+	
+	private TextInput usernameField, passwordField;
+	private TextButton loginButton, exitButton;
+	
+	private Stage stage = new Stage();
 	
 	public LoginMenu(Game game) {
 		this.game = game;
-		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
@@ -28,12 +34,39 @@ public class LoginMenu implements Screen, InputProcessor {
 		button = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonnormal.png")));
 		buttonHover = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonhover.png")));
 		buttonClick = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonclicked.png")));
+		inputField = new Sprite(new Texture(Gdx.files.internal("gui/menu/inputfield.png")));
 		
 		background.flip(false, true);
 		menuBorder.flip(false, true);
 		button.flip(false, true);
 		buttonHover.flip(false, true);
 		buttonClick.flip(false, true);
+		inputField.flip(false, true);
+		
+		usernameField = new TextInput(inputField, 400 - (int)inputField.getWidth()/2, 600 - (int)menuBorder.getHeight() + 45, "Username:", stage, false);
+		usernameField.giveFocus();
+		passwordField = new TextInput(inputField, usernameField.x, usernameField.y + usernameField.height + 10, "Password:", stage, true);
+		
+		loginButton = new TextButton(button, 400 - (int)button.getWidth() - 10, 600 - (int)button.getHeight() - 50);
+		loginButton.text = "Login"; 
+		loginButton.clickTexture = buttonClick;
+		loginButton.hoverTexture = buttonHover;
+		loginButton.nonHoverTexture = button;
+		
+		exitButton = new TextButton(button, 410, 600 - (int)button.getHeight() - 50);
+		exitButton.text = "Exit";
+		exitButton.clickTexture = buttonClick;
+		exitButton.hoverTexture = buttonHover;
+		exitButton.nonHoverTexture = button;
+		
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(this);
+		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(usernameField);
+		inputMultiplexer.addProcessor(passwordField);
+		inputMultiplexer.addProcessor(loginButton);
+		inputMultiplexer.addProcessor(exitButton);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 	}
 
@@ -45,7 +78,15 @@ public class LoginMenu implements Screen, InputProcessor {
 		batch.draw(background, 0, 0, 800, 600);
 		batch.draw(menuBorder, 400 - menuBorder.getWidth()/2, 600 - menuBorder.getHeight());
 		
+		usernameField.render(batch);
+		passwordField.render(batch);
+		loginButton.render(batch);
+		exitButton.render(batch);
+
 		batch.end();
+		
+		stage.draw();
+		stage.act();
 	}
 
 	@Override
@@ -74,7 +115,7 @@ public class LoginMenu implements Screen, InputProcessor {
 
 	@Override
 	public void dispose() {
-		
+		stage.dispose();
 		batch.dispose();
 	}
 
@@ -98,11 +139,17 @@ public class LoginMenu implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if(loginButton.checkClick(screenX, screenY)) {
+			MainClient.login(usernameField.getText(), passwordField.getText());
+		} else if(exitButton.checkClick(screenX, screenY)) {
+			game.setScreen(new MainMenu(game));
+		}
 		return false;
 	}
 
@@ -114,6 +161,7 @@ public class LoginMenu implements Screen, InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -122,5 +170,6 @@ public class LoginMenu implements Screen, InputProcessor {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }

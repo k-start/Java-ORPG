@@ -9,6 +9,7 @@ public class UserFile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public String username, password;
+	public int x, y;
 	
 	public void saveUser() throws IOException {
 		FileOutputStream fileOut = new FileOutputStream("data/users/" + username);

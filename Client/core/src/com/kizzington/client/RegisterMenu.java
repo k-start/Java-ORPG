@@ -118,7 +118,7 @@ public class RegisterMenu implements Screen, InputProcessor {
 
 	@Override
 	public void dispose() {
-		
+		stage.dispose();
 		batch.dispose();
 	}
 
