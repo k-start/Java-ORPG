@@ -8,22 +8,32 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.esotericsoftware.kryonet.Client;
 import com.kizzington.packets.PacketMove;
 
 public class Player {
-	int x, y;
-	String username;
+	public int x, y;
+	public String username;
 	
 	private Client client = MainClient.client;
-	
-	private BitmapFont font = MainClient.font;
+
+	private BitmapFont font;
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontGenerator.FreeTypeFontParameter parameters;
 	private GlyphLayout layout = new GlyphLayout();
 	
 	private Sprite playerSprite;
 	
 	public Player() {		
+
 		playerSprite = new Sprite(new Texture(Gdx.files.internal("player.png")));
+
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
+		parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameters.size = 12;
+		parameters.color = Color.WHITE;
+		font = generator.generateFont(parameters);
 	}
 	
 	public void render(SpriteBatch batch) {

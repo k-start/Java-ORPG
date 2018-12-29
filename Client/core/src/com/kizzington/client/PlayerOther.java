@@ -7,30 +7,35 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class PlayerOther {
-	int x, y = 0;
-	String username;
-	int id;
-	
-	private BitmapFont font = MainClient.font;
+	public int x, y = 0;
+	public String username;
+	public int id;
+
+	private BitmapFont font;
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontGenerator.FreeTypeFontParameter parameters;
 	private GlyphLayout layout = new GlyphLayout();
 	
-	public Sprite playerSprite2;
+	public Sprite playerSprite;
 	
 	public PlayerOther() {
 		
-		playerSprite2 = new Sprite(new Texture(Gdx.files.internal("playerother.png")));
-	}
-	
-	public PlayerOther(PlayerOther po) {
-		playerSprite2 = po.playerSprite2;
+		playerSprite = new Sprite(new Texture(Gdx.files.internal("playerother.png")));
+
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
+		parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameters.size = 12;
+		parameters.color = Color.WHITE;
+		font = generator.generateFont(parameters);
 	}
 
 	public void render(SpriteBatch batch) {
-		playerSprite2.setX(x);
-		playerSprite2.setY(y);
-		playerSprite2.draw(batch);
+		playerSprite.setX(x);
+		playerSprite.setY(y);
+		playerSprite.draw(batch);
 		
 		layout.setText(font, username);
 		int textWidth = (int)layout.width;
@@ -38,6 +43,6 @@ public class PlayerOther {
 		
 		font.getData().setScale(1, -1);
 		font.setColor(Color.WHITE);
-		font.draw(batch, username, x + playerSprite2.getWidth()/2 - textWidth/2, y - 10);
+		font.draw(batch, username, x + playerSprite.getWidth()/2 - textWidth/2, y - 10);
 	}
 }

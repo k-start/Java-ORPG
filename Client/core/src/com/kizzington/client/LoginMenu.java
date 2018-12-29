@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.kizzington.client.guiElements.TextButton;
+import com.kizzington.client.guiElements.TextInput;
 
 public class LoginMenu implements Screen, InputProcessor {
 	private Game game;
@@ -67,7 +71,6 @@ public class LoginMenu implements Screen, InputProcessor {
 		inputMultiplexer.addProcessor(loginButton);
 		inputMultiplexer.addProcessor(exitButton);
 		Gdx.input.setInputProcessor(inputMultiplexer);
-		
 	}
 
 	@Override
@@ -117,6 +120,10 @@ public class LoginMenu implements Screen, InputProcessor {
 	public void dispose() {
 		stage.dispose();
 		batch.dispose();
+		loginButton.dispose();
+		exitButton.dispose();
+		usernameField.dispose();
+		passwordField.dispose();
 	}
 
 	@Override

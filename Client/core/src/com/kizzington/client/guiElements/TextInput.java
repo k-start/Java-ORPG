@@ -1,4 +1,4 @@
-package com.kizzington.client;
+package com.kizzington.client.guiElements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -21,13 +21,13 @@ public class TextInput implements InputProcessor {
 	public Stage stage;
 	
 	private BitmapFont font;
-	FreeTypeFontGenerator generator;
-	FreeTypeFontParameter parameters;
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontParameter parameters;
 	private GlyphLayout layout = new GlyphLayout();
 	
-	TextField field;
+	private TextField field;
 	
-	Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+	private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 	
 	public TextInput(Sprite sprite, int x, int y, String text, Stage stage, boolean password) {
 		this.sprite = sprite;
@@ -68,8 +68,6 @@ public class TextInput implements InputProcessor {
 		
 		font.setColor(Color.BLACK);
 		font.draw(batch, text, x + sprite.getWidth()/5 - textWidth/2, y + sprite.getHeight()/2 + textHeight/2);
-		//font.setColor(Color.WHITE);
-		//field.draw(batch, 1);
 	}
 	
 	public String getText() {
@@ -129,5 +127,10 @@ public class TextInput implements InputProcessor {
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void dispose() {
+		font.dispose();
+		generator.dispose();
 	}
 }

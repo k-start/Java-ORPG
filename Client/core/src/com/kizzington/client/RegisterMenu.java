@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.kizzington.client.guiElements.TextButton;
+import com.kizzington.client.guiElements.TextInput;
 
 public class RegisterMenu implements Screen, InputProcessor {
 	private Game game;
@@ -120,6 +122,11 @@ public class RegisterMenu implements Screen, InputProcessor {
 	public void dispose() {
 		stage.dispose();
 		batch.dispose();
+		registerButton.dispose();
+		exitButton.dispose();
+		usernameField.dispose();
+		passwordField.dispose();
+		passwordConfField.dispose();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.kizzington.client;
+package com.kizzington.client.guiElements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -17,23 +17,9 @@ public class TextButton implements InputProcessor {
 	public String text;
 	
 	private BitmapFont font;
-	FreeTypeFontGenerator generator;
-	FreeTypeFontParameter parameters;
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontParameter parameters;
 	private GlyphLayout layout = new GlyphLayout();
-
-	public TextButton(Sprite sprite, int x, int y, int width, int height) {
-		this.sprite = sprite;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
-		parameters = new FreeTypeFontParameter();
-		parameters.size = 20;
-		parameters.color = Color.BLACK;
-		font = generator.generateFont(parameters);
-	}
 	
 	public TextButton(Sprite sprite, int x, int y) {
 		this.sprite = sprite;
@@ -142,4 +128,9 @@ public class TextButton implements InputProcessor {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    public void dispose() {
+		font.dispose();
+		generator.dispose();
+    }
 }

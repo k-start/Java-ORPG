@@ -109,13 +109,14 @@ public class MainServer {
 									//Send online player data/current user data
 									for(int i = 0; i < server.getConnections().length; i++) {
 						    			ServerConnection player = (ServerConnection) server.getConnections()[i];
-						    			
-						    			PacketPlayer p = new PacketPlayer();
-						    			p.id = player.getID();
-						    			p.x = player.x;
-						    			p.y = player.y;
-						    			p.name = player.name;
-						    			c.sendTCP(p);
+										if(player.loggedIn) {
+											PacketPlayer p = new PacketPlayer();
+											p.id = player.getID();
+											p.x = player.x;
+											p.y = player.y;
+											p.name = player.name;
+											c.sendTCP(p);
+										}
 						    		}
 						    		
 						    		PacketPlayer p = new PacketPlayer();

@@ -7,12 +7,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.kizzington.client.guiElements.TextButton;
 
 public class MainMenu implements Screen, InputProcessor {
 	private Game game;
 	private SpriteBatch batch;
 	
-	private Sprite background, menuBorder, button, buttonHover, buttonClick;
+	private Sprite background, menuBorder;
 	
 	private TextButton loginButton, registerButton;
 
@@ -28,9 +29,9 @@ public class MainMenu implements Screen, InputProcessor {
 		
 		background = new Sprite(new Texture(Gdx.files.internal("gui/menu/background.png")));
 		menuBorder = new Sprite(new Texture(Gdx.files.internal("gui/menu/uibody.png")));
-		button = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonnormal.png")));
-		buttonHover = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonhover.png")));
-		buttonClick = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonclicked.png")));
+		Sprite button = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonnormal.png")));
+		Sprite buttonHover = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonhover.png")));
+		Sprite buttonClick = new Sprite(new Texture(Gdx.files.internal("gui/menu/buttonclicked.png")));
 		
 		background.flip(false, true);
 		menuBorder.flip(false, true);
@@ -49,7 +50,6 @@ public class MainMenu implements Screen, InputProcessor {
 		registerButton.clickTexture = buttonClick;
 		registerButton.hoverTexture = buttonHover;
 		registerButton.nonHoverTexture = button;
-		//button = new Texture(Gdx.files.internal("gui/menu/buttonnormal.png"));
 		
 	}
 
@@ -95,8 +95,9 @@ public class MainMenu implements Screen, InputProcessor {
 
 	@Override
 	public void dispose() {
-		
 		batch.dispose();
+		loginButton.dispose();
+		registerButton.dispose();
 	}
 
 	@Override
