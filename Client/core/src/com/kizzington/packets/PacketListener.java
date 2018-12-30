@@ -12,17 +12,17 @@ import com.kizzington.client.PlayerOther;
 
 import com.kizzington.client.*;
 
-public class PacketHandler extends Listener{
+public class PacketListener extends Listener{
 
     private Game game;
     private Client client;
 
-    public PacketHandler(Game game, Client client) {
+    public PacketListener(Game game, Client client) {
         this.game = game;
         this.client = client;
     }
 
-    public void registerClasses(){
+    public void registerPackets(){
         Kryo kryo = client.getKryo();
         kryo.register(PacketMove.class);
         kryo.register(PacketPlayer.class);

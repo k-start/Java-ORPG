@@ -4,10 +4,15 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.kizzington.client.guiElements.TextButton;
+import com.sun.tools.javac.Main;
 
 public class MainMenu implements Screen, InputProcessor {
 	private Game game;
@@ -17,10 +22,20 @@ public class MainMenu implements Screen, InputProcessor {
 	
 	private TextButton loginButton, registerButton;
 
+	private BitmapFont font;
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontGenerator.FreeTypeFontParameter parameters;
+	private GlyphLayout layout = new GlyphLayout();
 	
 	public MainMenu(Game game) {
 		this.game = game;
 		Gdx.input.setInputProcessor(this);
+
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
+		parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameters.size = 15;
+		parameters.color = Color.WHITE;
+		font = generator.generateFont(parameters);
 	}
 
 	@Override
@@ -63,8 +78,16 @@ public class MainMenu implements Screen, InputProcessor {
 		
 		loginButton.render(batch);
 		registerButton.render(batch);
-		
-		//batch.draw(button, 400 - button.getWidth()/2, menuBorder.getHeight() - button.getHeight() - 60);
+
+		font.setColor(Color.WHITE);
+		font.getData().setScale(1, -1);
+
+		if(MainClient.client.isConnected()){
+			font.draw(batch, "Status: Online", 10, 600 - 20);
+		} else {
+			font.draw(batch, "Status: Offline", 10, 600 - 20);
+		}
+
 		
 		batch.end();
 	}
@@ -98,6 +121,8 @@ public class MainMenu implements Screen, InputProcessor {
 		batch.dispose();
 		loginButton.dispose();
 		registerButton.dispose();
+		font.dispose();
+		generator.dispose();
 	}
 
 	@Override

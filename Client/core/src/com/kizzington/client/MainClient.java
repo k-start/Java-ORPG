@@ -5,77 +5,80 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.esotericsoftware.kryonet.Client;
 import com.kizzington.packets.*;
 
 public class MainClient extends Game {
 	private Game game;
-	private SpriteBatch batch;
 	
 	public static Player player;
 	public static ArrayList<PlayerOther> players = new ArrayList<PlayerOther>();
-	
 	public static Client client;
 	public static OrthographicCamera cam;
+	public static int height, width;
+
+	private float connectionTimer = 5;
 	
 	@Override
 	public void create () {
 		game = this;
-		
-		batch = new SpriteBatch();
+		game.setScreen(new MainMenu(game));
+
+		width = Gdx.graphics.getWidth();
+		height = Gdx.graphics.getHeight();
 		
 		cam = new OrthographicCamera();
 		cam.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.update();
 		
-		setScreen(new MainMenu(game));
-		
 		client = new Client();
 	    client.start();
 
-		PacketHandler packetHandler = new PacketHandler(game, client);
-		packetHandler.registerClasses();
+		PacketListener packetListener = new PacketListener(game, client);
+		packetListener.registerPackets();
 	    
 	    try {
 			client.connect(5000, "127.0.0.1", 54555, 54777);
-		} catch (IOException e) { e.printStackTrace(); }
+		} catch (IOException e) { System.out.println("Unable to connect, retrying in 5 seconds"); }
 
-
-		client.addListener(packetHandler);
+		client.addListener(packetListener);
 	    
 	    player = new Player();
-	    
 	}
 
 	@Override
 	public void render () {
-		update();
+		float delta = Gdx.graphics.getDeltaTime();
+		update(delta);
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		super.render();
-		
-		batch.begin();
-		
-		batch.end();
 	}
 	
-	public void update() {
+	public void update(float delta) {
+		if(!client.isConnected()){
+			connectionTimer -= delta;
+			if(connectionTimer <= 0){
+				try {
+					client.connect(5000, "127.0.0.1", 54555, 54777);
+				} catch (IOException e) {
+					System.out.println("Unable to connect, retrying in 5 seconds");
+					connectionTimer = 5;
+				}
+			}
+		}
+
 		cam.update();
-		batch.setProjectionMatrix(cam.combined);
 	}
-	
+
 	@Override
-	public void dispose () {
-		batch.dispose();
+	public void resize(int width, int height){
+		this.width = width;
+		this.height = height;
 	}
 	
 	public static void register(String username, String password, String passwordConfirmation) {
@@ -98,5 +101,10 @@ public class MainClient extends Game {
 		log.username = username;
 		log.password = password;
 		client.sendTCP(log);
+	}
+
+	@Override
+	public void dispose () {
+
 	}
 }
