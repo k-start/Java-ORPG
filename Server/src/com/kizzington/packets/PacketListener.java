@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.kizzington.server.EntityPlayer;
 import com.kizzington.server.ServerConnection;
 import com.kizzington.server.UserFile;
 
@@ -90,8 +91,9 @@ public class PacketListener extends Listener {
                     if(user.password.equals(log.password)) {
                         boolean loggedIn = false;
                         for(int i = 0; i < server.getConnections().length; i++) {
-                            ServerConnection player = (ServerConnection) server.getConnections()[i];
-                            if(player.loggedIn && player.name.equals(log.username)) {
+                            ServerConnection playerConn = (ServerConnection) server.getConnections()[i];
+                            EntityPlayer player = playerConn.getPlayer();
+                            if(playerConn.isLoggedIn() && player.getUsername().equals(log.username)) {
                                 loggedIn = true;
                                 break;
                             }
@@ -99,10 +101,10 @@ public class PacketListener extends Listener {
 
                         if(!loggedIn) {
                             //successful login
-                            connection.loggedIn = true;
-                            connection.name = log.username;
-                            connection.x = user.x;
-                            connection.y = user.y;
+                            connection.setLoggedIn(true);
+
+                            EntityPlayer newPlayer = new EntityPlayer(user.x, user.y, log.username);
+                            connection.setPlayer(newPlayer);
                             connection.user = user;
 
                             PacketLogin packet = new PacketLogin();
@@ -111,22 +113,24 @@ public class PacketListener extends Listener {
 
                             //Send online player data/current user data
                             for(int i = 0; i < server.getConnections().length; i++) {
-                                ServerConnection player = (ServerConnection) server.getConnections()[i];
-                                if(player.loggedIn) {
+                                ServerConnection playerConn = (ServerConnection) server.getConnections()[i];
+                                if(playerConn.isLoggedIn()) {
+                                    EntityPlayer player = playerConn.getPlayer();
+
                                     PacketPlayer p = new PacketPlayer();
-                                    p.id = player.getID();
-                                    p.x = player.x;
-                                    p.y = player.y;
-                                    p.name = player.name;
+                                    p.id = playerConn.getID();
+                                    p.x = player.getX();
+                                    p.y = player.getY();
+                                    p.name = player.getUsername();
                                     c.sendTCP(p);
                                 }
                             }
 
                             PacketPlayer p = new PacketPlayer();
                             p.id = connection.getID();
-                            p.x = connection.x;
-                            p.y = connection.y;
-                            p.name = connection.name;
+                            p.x = newPlayer.getX();
+                            p.y = newPlayer.getY();
+                            p.name = newPlayer.getUsername();
                             server.sendToAllTCP(p);
                         } else {
                             PacketLogin packet = new PacketLogin();
@@ -157,19 +161,11 @@ public class PacketListener extends Listener {
 
             PacketMove newPacket = new PacketMove();
 
-            if(packet.dir == 0) {
-                connection.x--;
-            } else if(packet.dir == 1) {
-                connection.x++;
-            } else if(packet.dir == 2) {
-                connection.y--;
-            } else if(packet.dir == 3) {
-                connection.y++;
-            }
+            connection.getPlayer().move(packet.dir);
 
             newPacket.id = connection.getID();
-            newPacket.x = connection.x;
-            newPacket.y = connection.y;
+            newPacket.x = connection.getPlayer().getX();
+            newPacket.y = connection.getPlayer().getY();
             server.sendToAllTCP(newPacket);
         }
     }
@@ -178,15 +174,15 @@ public class PacketListener extends Listener {
         ServerConnection connection = (ServerConnection)c;
 
         //log user out and save state
-        if(connection.loggedIn) {
-            connection.user.x = connection.x;
-            connection.user.y = connection.y;
+        if(connection.isLoggedIn()) {
+            connection.user.x = connection.getPlayer().getX();
+            connection.user.y = connection.getPlayer().getY();
             try {
                 connection.user.saveUser();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            connection.loggedIn = false;
+            connection.setLoggedIn(false);
 
             //Send logout packet to all players, removing from their game
             PacketLogout logout = new PacketLogout();

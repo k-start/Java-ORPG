@@ -10,6 +10,18 @@ public class Entity {
         this.y = y;
     }
 
+    public void move(int dir){
+        if(dir == 0) {
+            x--;
+        } else if(dir == 1) {
+            x++;
+        } else if(dir == 2) {
+            y--;
+        } else if(dir == 3) {
+            y++;
+        }
+    }
+
     public int getX() { return x; }
     public int getY() { return y; }
     public int getWidth() { return width; }
