@@ -48,7 +48,7 @@ public class MainClient extends Game {
 		} catch (IOException e) { e.printStackTrace(); }
 
 
-		packetHandler.listen();
+		client.addListener(packetHandler);
 	    
 	    player = new Player();
 	    
