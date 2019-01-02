@@ -105,28 +105,23 @@ public class PacketListener extends Listener {
 
                             MainServer.entityHandler.addPlayer(user.x, user.y, log.username, connection);
                             connection.user = user;
-
-                            MainServer.entityHandler.printPlayerIDS();
+                            connection.setLoggedIn(false);
 
                             PacketLogin packet = new PacketLogin();
                             packet.response = 1;
                             c.sendTCP(packet);
 
-                            //Send online player data/current user data
-                            for(int i = 0; i < server.getConnections().length; i++) {
-                                ServerConnection playerConn = (ServerConnection) server.getConnections()[i];
-                                if(playerConn.isLoggedIn()) {
-                                    EntityPlayer player = playerConn.getPlayer();
-
-                                    PacketPlayer p = new PacketPlayer();
-                                    p.id = playerConn.getID();
-                                    p.x = player.getX();
-                                    p.y = player.getY();
-                                    p.name = player.getUsername();
-                                    c.sendTCP(p);
-                                }
+                            //Send all players to the user
+                            for(EntityPlayer player: MainServer.entityHandler.getPlayers()){
+                                PacketPlayer p = new PacketPlayer();
+                                p.id = player.getID();
+                                p.x = player.getX();
+                                p.y = player.getY();
+                                p.name = player.getUsername();
+                                c.sendTCP(p);
                             }
 
+                            //Send the user to all players
                             PacketPlayer p = new PacketPlayer();
                             p.id = connection.getID();
                             p.x = MainServer.entityHandler.getPlayer(c.getID()).getX();
