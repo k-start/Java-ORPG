@@ -9,8 +9,11 @@ import com.kizzington.packets.*;
 public class MainServer {
 
 	public static Server server;
+	public static EntityHandler entityHandler;
 
 	public static void main(String[] args) throws IOException {
+        entityHandler = new EntityHandler();
+
 		server = new Server() {
 			protected Connection newConnection() {
 				return new ServerConnection();

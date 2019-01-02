@@ -5,9 +5,11 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.kizzington.server.EntityPlayer;
+import com.kizzington.server.MainServer;
 import com.kizzington.server.ServerConnection;
 import com.kizzington.server.UserFile;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -90,10 +92,8 @@ public class PacketListener extends Listener {
 
                     if(user.password.equals(log.password)) {
                         boolean loggedIn = false;
-                        for(int i = 0; i < server.getConnections().length; i++) {
-                            ServerConnection playerConn = (ServerConnection) server.getConnections()[i];
-                            EntityPlayer player = playerConn.getPlayer();
-                            if(playerConn.isLoggedIn() && player.getUsername().equals(log.username)) {
+                        for(EntityPlayer player: MainServer.entityHandler.getPlayers()){
+                            if(player.getUsername().equals(log.username)){
                                 loggedIn = true;
                                 break;
                             }
@@ -103,9 +103,10 @@ public class PacketListener extends Listener {
                             //successful login
                             connection.setLoggedIn(true);
 
-                            EntityPlayer newPlayer = new EntityPlayer(user.x, user.y, log.username);
-                            connection.setPlayer(newPlayer);
+                            MainServer.entityHandler.addPlayer(user.x, user.y, log.username, connection);
                             connection.user = user;
+
+                            MainServer.entityHandler.printPlayerIDS();
 
                             PacketLogin packet = new PacketLogin();
                             packet.response = 1;
@@ -128,9 +129,9 @@ public class PacketListener extends Listener {
 
                             PacketPlayer p = new PacketPlayer();
                             p.id = connection.getID();
-                            p.x = newPlayer.getX();
-                            p.y = newPlayer.getY();
-                            p.name = newPlayer.getUsername();
+                            p.x = MainServer.entityHandler.getPlayer(c.getID()).getX();
+                            p.y = MainServer.entityHandler.getPlayer(c.getID()).getY();
+                            p.name = MainServer.entityHandler.getPlayer(c.getID()).getUsername();
                             server.sendToAllTCP(p);
                         } else {
                             PacketLogin packet = new PacketLogin();
@@ -183,6 +184,8 @@ public class PacketListener extends Listener {
                 e.printStackTrace();
             }
             connection.setLoggedIn(false);
+
+            MainServer.entityHandler.removePlayer(connection.getID());
 
             //Send logout packet to all players, removing from their game
             PacketLogout logout = new PacketLogout();
