@@ -7,13 +7,8 @@ import com.esotericsoftware.kryonet.Server;
 import com.kizzington.server.EntityPlayer;
 import com.kizzington.server.MainServer;
 import com.kizzington.server.ServerConnection;
-import com.kizzington.server.UserFile;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.sql.SQLException;
 
 public class PacketListener extends Listener {
 
@@ -42,29 +37,22 @@ public class PacketListener extends Listener {
         if(object instanceof PacketRegister) {
             PacketRegister reg = (PacketRegister)object;
 
-            //Check if user file exists
-            File f = new File("data/users/" + reg.username);
-            if(f.exists() && !f.isDirectory()) {
-                System.out.println("User Exists");
-
+            //Check if user exists
+            if(MainServer.database.userExists(reg.username)) {
                 PacketRegister packet = new PacketRegister();
                 packet.response = 2;
                 c.sendTCP(packet);
             } else {
-                System.out.println("Registering user " + reg.username);
-                UserFile newUser = new UserFile();
-                newUser.username = reg.username;
-                newUser.password = reg.password;
-                newUser.x = 0;
-                newUser.y = 0;
                 try {
                     //create user and send success
-                    newUser.saveUser();
+                    System.out.println("Registering user " + reg.username);
+
+                    MainServer.database.addUser(reg.username, reg.password, 0,0 );
 
                     PacketRegister packet = new PacketRegister();
                     packet.response = 1;
                     c.sendTCP(packet);
-                } catch (IOException e) {
+                } catch (SQLException e) {
                     //unable to create user, return error
                     e.printStackTrace();
 
@@ -79,74 +67,49 @@ public class PacketListener extends Listener {
         if(object instanceof PacketLogin) {
             PacketLogin log = (PacketLogin)object;
 
-            UserFile user;
+            //Check if user is logged in
+            if(MainServer.entityHandler.getPlayer(log.username) == null) {
+                //Get user from database
+                EntityPlayer player = MainServer.database.getPlayer(log.username, log.password, connection);
+                if(player != null){
+                    //successful login
+                    connection.setLoggedIn(true);
 
-            File f = new File("data/users/" + log.username);
-            if(f.exists() && !f.isDirectory()) {
-                FileInputStream fi;
-                try {
-                    fi = new FileInputStream(f);
-                    ObjectInputStream oi = new ObjectInputStream(fi);
+                    PacketLogin packet = new PacketLogin();
+                    packet.response = 1;
+                    c.sendTCP(packet);
 
-                    user = (UserFile)oi.readObject();
-
-                    if(user.password.equals(log.password)) {
-                        boolean loggedIn = false;
-                        for(EntityPlayer player: MainServer.entityHandler.getPlayers()){
-                            if(player.getUsername().equals(log.username)){
-                                loggedIn = true;
-                                break;
-                            }
-                        }
-
-                        if(!loggedIn) {
-                            //successful login
-                            connection.setLoggedIn(true);
-
-                            MainServer.entityHandler.addPlayer(user.x, user.y, log.username, connection);
-                            connection.user = user;
-                            connection.setLoggedIn(false);
-
-                            PacketLogin packet = new PacketLogin();
-                            packet.response = 1;
-                            c.sendTCP(packet);
-
-                            //Send all players to the user
-                            for(EntityPlayer player: MainServer.entityHandler.getPlayers()){
-                                PacketPlayer p = new PacketPlayer();
-                                p.id = player.getID();
-                                p.x = player.getX();
-                                p.y = player.getY();
-                                p.name = player.getUsername();
-                                c.sendTCP(p);
-                            }
-
-                            //Send the user to all players
-                            PacketPlayer p = new PacketPlayer();
-                            p.id = connection.getID();
-                            p.x = MainServer.entityHandler.getPlayer(c.getID()).getX();
-                            p.y = MainServer.entityHandler.getPlayer(c.getID()).getY();
-                            p.name = MainServer.entityHandler.getPlayer(c.getID()).getUsername();
-                            server.sendToAllTCP(p);
-                        } else {
-                            PacketLogin packet = new PacketLogin();
-                            packet.response = 2;
-                            c.sendTCP(packet);
-                        }
-                    } else {
-                        PacketLogin packet = new PacketLogin();
-                        packet.response = 0;
-                        c.sendTCP(packet);
+                    //Send all players to the user
+                    for(EntityPlayer ep: MainServer.entityHandler.getPlayers()){
+                        PacketPlayer p = new PacketPlayer();
+                        p.id = ep.getID();
+                        p.x = ep.getX();
+                        p.y = ep.getY();
+                        p.name = ep.getUsername();
+                        c.sendTCP(p);
                     }
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+
+                    //Add entity to server
+                    MainServer.entityHandler.addPlayer(player);
+
+                    //Send the user to all players
+                    PacketPlayer p = new PacketPlayer();
+                    p.id = connection.getID();
+                    p.x = player.getX();
+                    p.y = player.getY();
+                    p.name = player.getUsername();
+                    server.sendToAllTCP(p);
+
+                } else {
+                    //send incorrect user/pass
                     PacketLogin packet = new PacketLogin();
                     packet.response = 0;
                     c.sendTCP(packet);
                 }
             } else {
+                //send user is logged in already
                 PacketLogin packet = new PacketLogin();
-                packet.response = 0;
+                packet.response = 2;
                 c.sendTCP(packet);
             }
 
@@ -171,11 +134,9 @@ public class PacketListener extends Listener {
 
         //log user out and save state
         if(connection.isLoggedIn()) {
-            connection.user.x = connection.getPlayer().getX();
-            connection.user.y = connection.getPlayer().getY();
             try {
-                connection.user.saveUser();
-            } catch (IOException e) {
+                MainServer.database.updateUser(connection.getPlayer());
+            } catch(SQLException e){
                 e.printStackTrace();
             }
             connection.setLoggedIn(false);

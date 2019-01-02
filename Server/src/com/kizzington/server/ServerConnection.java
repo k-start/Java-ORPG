@@ -4,8 +4,6 @@ import com.esotericsoftware.kryonet.Connection;
 
 public class ServerConnection extends Connection {
 
-	public UserFile user;
-
 	private boolean loggedIn = false;
 	private EntityPlayer player;
 

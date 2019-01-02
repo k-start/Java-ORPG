@@ -27,6 +27,15 @@ public class EntityHandler {
     }
     public EntityPlayer getPlayer(int id) { return players.get(id-1); }
 
+    public EntityPlayer getPlayer(String username){
+        for(EntityPlayer player: getPlayers()){
+            if(player.getUsername().equals(username)){
+                return player;
+            }
+        }
+        return null;
+    }
+
     public void printPlayerIDS(){
         for (EntityPlayer player: getPlayers()) {
             System.out.println(player.getID());
