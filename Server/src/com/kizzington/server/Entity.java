@@ -12,13 +12,13 @@ public class Entity {
 
     public void move(int dir){
         if(dir == 0) {
-            x -= 1;
+            y++;
         } else if(dir == 1) {
-            x += 1;
+            x--;
         } else if(dir == 2) {
-            y -= 1;
+            x++;
         } else if(dir == 3) {
-            y += 1;
+            y--;
         }
     }
 

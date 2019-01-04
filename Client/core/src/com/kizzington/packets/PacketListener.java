@@ -61,17 +61,12 @@ public class PacketListener extends Listener{
                 PacketPlayer packet = (PacketPlayer) object;
 
                 if (packet.id != client.getID()) {
-                    PlayerOther other = new PlayerOther();
-                    other.x = packet.x;
-                    other.y = packet.y;
-                    other.y = packet.y;
-                    other.id = packet.id;
-                    other.username = packet.name;
+                    EntityPlayer other = new EntityPlayer(packet.x, packet.y, packet.name, packet.id);
                     MainClient.players.add(other);
                 } else {
-                    MainClient.player.x = (float)packet.x;
-                    MainClient.player.y = (float)packet.y;
-                    MainClient.player.username = packet.name;
+                    MainClient.player.setX((float)packet.x);
+                    MainClient.player.setY((float)packet.y);
+                    MainClient.player.setUsername(packet.name);
                 }
             }
         });
@@ -80,11 +75,11 @@ public class PacketListener extends Listener{
         if (object instanceof PacketMove) {
             PacketMove packet = (PacketMove) object;
             if (packet.id == client.getID()) {
-                MainClient.player.moveTo(packet.x, packet.y, packet.dir);
+                MainClient.player.move(packet.x, packet.y, packet.dir);
             } else {
-                for (PlayerOther p : MainClient.players) {
-                    if (p.id == packet.id) {
-                        p.moveTo(packet.x, packet.y, packet.dir);
+                for (EntityPlayer p : MainClient.players) {
+                    if (p.getID() == packet.id) {
+                        p.move(packet.x, packet.y, packet.dir);
                         break;
                     }
                 }
@@ -93,8 +88,8 @@ public class PacketListener extends Listener{
 
         if (object instanceof PacketLogout) {
             PacketLogout packet = (PacketLogout) object;
-            for (PlayerOther p : MainClient.players) {
-                if (p.id == packet.id) {
+            for (EntityPlayer p : MainClient.players) {
+                if (p.getID() == packet.id) {
                     MainClient.players.remove(p);
                     break;
                 }

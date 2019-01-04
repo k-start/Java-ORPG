@@ -5,8 +5,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.esotericsoftware.kryonet.Client;
 import com.kizzington.packets.*;
 
@@ -14,7 +17,7 @@ public class MainClient extends Game {
 	private Game game;
 	
 	public static Player player;
-	public static ArrayList<PlayerOther> players = new ArrayList<PlayerOther>();
+	public static ArrayList<EntityPlayer> players = new ArrayList<>();
 	public static Client client;
 	public static OrthographicCamera cam;
 	public static int height, width;
@@ -47,7 +50,7 @@ public class MainClient extends Game {
 
 		client.addListener(packetListener);
 	    
-	    player = new Player();
+	    player = new Player(0, 0);
 	}
 
 	@Override
@@ -103,6 +106,14 @@ public class MainClient extends Game {
 		log.username = username;
 		log.password = password;
 		client.sendTCP(log);
+	}
+
+	public static BitmapFont getFont(int size, Color color){
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameters.size = size;
+		parameters.color = color;
+		return generator.generateFont(parameters);
 	}
 
 	@Override

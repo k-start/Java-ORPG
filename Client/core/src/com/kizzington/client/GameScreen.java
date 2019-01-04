@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class GameScreen implements Screen{
+public class GameScreen implements Screen {
 
 	private Game game;
 	private SpriteBatch batch;
@@ -27,9 +27,7 @@ public class GameScreen implements Screen{
 		batch.setProjectionMatrix(MainClient.cam.combined);
 		batch.begin();
 		
-		MainClient.player.update();
-		
-		for(PlayerOther p : MainClient.players) {
+		for(EntityPlayer p : MainClient.players) {
 			p.render(batch, delta);
 		}
 		
