@@ -9,6 +9,8 @@ import com.kizzington.server.MainServer;
 import com.kizzington.server.ServerConnection;
 
 import java.sql.SQLException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PacketListener extends Listener {
 
@@ -116,16 +118,28 @@ public class PacketListener extends Listener {
         }
 
         if(object instanceof PacketMove) {
-            PacketMove packet = (PacketMove) object;
+            if(!connection.getPlayer().isMoving()) {
+                connection.getPlayer().setMoving(true);
+                PacketMove packet = (PacketMove) object;
 
-            PacketMove newPacket = new PacketMove();
+                PacketMove newPacket = new PacketMove();
 
-            connection.getPlayer().move(packet.dir);
+                connection.getPlayer().move(packet.dir);
 
-            newPacket.id = connection.getID();
-            newPacket.x = connection.getPlayer().getX();
-            newPacket.y = connection.getPlayer().getY();
-            server.sendToAllTCP(newPacket);
+                newPacket.id = connection.getID();
+                newPacket.x = connection.getPlayer().getX();
+                newPacket.y = connection.getPlayer().getY();
+                newPacket.dir = packet.dir;
+                server.sendToAllUDP(newPacket);
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        connection.getPlayer().setMoving(false);
+                    }
+                }, 500);
+            }
         }
     }
 

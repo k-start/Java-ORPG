@@ -19,6 +19,8 @@ public class MainClient extends Game {
 	public static OrthographicCamera cam;
 	public static int height, width;
 
+	public static int tileSize = 32;
+
 	private float connectionTimer = 5;
 	
 	@Override

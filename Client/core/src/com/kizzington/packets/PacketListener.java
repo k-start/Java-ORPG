@@ -69,8 +69,8 @@ public class PacketListener extends Listener{
                     other.username = packet.name;
                     MainClient.players.add(other);
                 } else {
-                    MainClient.player.x = packet.x;
-                    MainClient.player.y = packet.y;
+                    MainClient.player.x = (float)packet.x;
+                    MainClient.player.y = (float)packet.y;
                     MainClient.player.username = packet.name;
                 }
             }
@@ -80,13 +80,11 @@ public class PacketListener extends Listener{
         if (object instanceof PacketMove) {
             PacketMove packet = (PacketMove) object;
             if (packet.id == client.getID()) {
-                MainClient.player.x = packet.x;
-                MainClient.player.y = packet.y;
+                MainClient.player.moveTo(packet.x, packet.y, packet.dir);
             } else {
                 for (PlayerOther p : MainClient.players) {
                     if (p.id == packet.id) {
-                        p.x = packet.x;
-                        p.y = packet.y;
+                        p.moveTo(packet.x, packet.y, packet.dir);
                         break;
                     }
                 }

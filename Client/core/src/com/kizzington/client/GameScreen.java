@@ -1,6 +1,7 @@
 package com.kizzington.client;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -12,6 +13,7 @@ public class GameScreen implements Screen{
 	public GameScreen(Game game) {
 		this.game = game;
 		batch = new SpriteBatch();
+		Gdx.input.setInputProcessor(MainClient.player);
 	}
 	
 	@Override
@@ -28,10 +30,10 @@ public class GameScreen implements Screen{
 		MainClient.player.update();
 		
 		for(PlayerOther p : MainClient.players) {
-			p.render(batch);
+			p.render(batch, delta);
 		}
 		
-		MainClient.player.render(batch);
+		MainClient.player.render(batch, delta);
 		
 		batch.end();
 		
