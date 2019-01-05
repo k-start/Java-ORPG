@@ -92,8 +92,6 @@ public class EntityPlayer extends Entity {
             @Override
             public void run() {
                 moving = false;
-                setX(newX);
-                setY(newY);
             }
         }, 500);
     }

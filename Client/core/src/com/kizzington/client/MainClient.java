@@ -16,8 +16,7 @@ import com.kizzington.packets.*;
 public class MainClient extends Game {
 	private Game game;
 	
-	public static Player player;
-	public static ArrayList<EntityPlayer> players = new ArrayList<>();
+	public static EntityHandler entityHandler;
 	public static Client client;
 	public static OrthographicCamera cam;
 	public static int height, width;
@@ -49,8 +48,8 @@ public class MainClient extends Game {
 		} catch (IOException e) { System.out.println("Unable to connect, retrying in 5 seconds"); }
 
 		client.addListener(packetListener);
-	    
-	    player = new Player(0, 0);
+
+		entityHandler = new EntityHandler();
 	}
 
 	@Override

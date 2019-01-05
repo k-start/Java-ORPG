@@ -1,5 +1,6 @@
 package com.kizzington.client;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,6 +10,10 @@ public class Player extends EntityPlayer implements InputProcessor {
 
     public Player(float x, float y){
         super(x, y);
+    }
+    public Player(float x, float y, String username, int id){
+        super(x, y, username, id);
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -24,6 +29,7 @@ public class Player extends EntityPlayer implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        System.out.println("asdasd");
         switch (keycode) {
             case Input.Keys.W:
                 sendMovement(3);

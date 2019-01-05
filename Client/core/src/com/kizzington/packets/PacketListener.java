@@ -8,7 +8,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.kizzington.client.GameScreen;
 import com.kizzington.client.MainMenu;
-import com.kizzington.client.PlayerOther;
 
 import com.kizzington.client.*;
 
@@ -61,12 +60,9 @@ public class PacketListener extends Listener{
                 PacketPlayer packet = (PacketPlayer) object;
 
                 if (packet.id != client.getID()) {
-                    EntityPlayer other = new EntityPlayer(packet.x, packet.y, packet.name, packet.id);
-                    MainClient.players.add(other);
+                    MainClient.entityHandler.addPlayer(packet.x, packet.y, packet.name, packet.id);
                 } else {
-                    MainClient.player.setX((float)packet.x);
-                    MainClient.player.setY((float)packet.y);
-                    MainClient.player.setUsername(packet.name);
+                    MainClient.entityHandler.setMyPlayer(packet.x, packet.y, packet.name, packet.id);
                 }
             }
         });
@@ -75,9 +71,9 @@ public class PacketListener extends Listener{
         if (object instanceof PacketMove) {
             PacketMove packet = (PacketMove) object;
             if (packet.id == client.getID()) {
-                MainClient.player.move(packet.x, packet.y, packet.dir);
+                MainClient.entityHandler.getMyPlayer().move(packet.x, packet.y, packet.dir);
             } else {
-                for (EntityPlayer p : MainClient.players) {
+                for (EntityPlayer p : MainClient.entityHandler.getPlayers()) {
                     if (p.getID() == packet.id) {
                         p.move(packet.x, packet.y, packet.dir);
                         break;
@@ -88,9 +84,9 @@ public class PacketListener extends Listener{
 
         if (object instanceof PacketLogout) {
             PacketLogout packet = (PacketLogout) object;
-            for (EntityPlayer p : MainClient.players) {
+            for (EntityPlayer p : MainClient.entityHandler.getPlayers()) {
                 if (p.getID() == packet.id) {
-                    MainClient.players.remove(p);
+                    MainClient.entityHandler.removePlayer(p.getID());
                     break;
                 }
             }

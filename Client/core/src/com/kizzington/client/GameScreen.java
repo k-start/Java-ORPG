@@ -13,7 +13,6 @@ public class GameScreen implements Screen {
 	public GameScreen(Game game) {
 		this.game = game;
 		batch = new SpriteBatch();
-		Gdx.input.setInputProcessor(MainClient.player);
 	}
 	
 	@Override
@@ -27,11 +26,11 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(MainClient.cam.combined);
 		batch.begin();
 		
-		for(EntityPlayer p : MainClient.players) {
+		for(EntityPlayer p : MainClient.entityHandler.getPlayers()) {
 			p.render(batch, delta);
 		}
 		
-		MainClient.player.render(batch, delta);
+		MainClient.entityHandler.getMyPlayer().render(batch, delta);
 		
 		batch.end();
 		
