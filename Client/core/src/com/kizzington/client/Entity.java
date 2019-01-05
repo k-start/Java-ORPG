@@ -29,7 +29,7 @@ public class Entity {
         this.screenY = y * MainClient.tileSize;
 
         sprite.setX(screenX);
-        sprite.setY(screenY);
+        sprite.setY(screenY - 16);
         sprite.flip(false, true);
 
         sprite.draw(batch);

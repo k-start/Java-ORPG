@@ -27,6 +27,10 @@ public class PacketListener extends Listener {
         kryo.register(PacketLogin.class);
         kryo.register(PacketLogout.class);
         kryo.register(PacketRegister.class);
+        kryo.register(PacketMap.class);
+        kryo.register(PacketTile.class);
+        kryo.register(PacketTile[].class);
+        kryo.register(PacketTile[][].class);
     }
 
     public void connected(Connection c) {
@@ -80,6 +84,9 @@ public class PacketListener extends Listener {
                     PacketLogin packet = new PacketLogin();
                     packet.response = 1;
                     c.sendTCP(packet);
+
+                    PacketMap map = MainServer.mapHandler.getPacket(0);
+                    c.sendTCP(map);
 
                     //Send all players to the user
                     for(EntityPlayer ep: MainServer.entityHandler.getPlayers()){

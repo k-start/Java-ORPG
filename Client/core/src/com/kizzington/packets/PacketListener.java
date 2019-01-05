@@ -10,6 +10,7 @@ import com.kizzington.client.GameScreen;
 import com.kizzington.client.MainMenu;
 
 import com.kizzington.client.*;
+import com.sun.tools.javac.Main;
 
 public class PacketListener extends Listener{
 
@@ -28,6 +29,10 @@ public class PacketListener extends Listener{
         kryo.register(PacketLogin.class);
         kryo.register(PacketLogout.class);
         kryo.register(PacketRegister.class);
+        kryo.register(PacketMap.class);
+        kryo.register(PacketTile.class);
+        kryo.register(PacketTile[].class);
+        kryo.register(PacketTile[][].class);
     }
 
     public void received (Connection c, Object object) {
@@ -81,6 +86,24 @@ public class PacketListener extends Listener{
                 }
             }
         }
+        Gdx.app.postRunnable(() -> {
+            if (object instanceof PacketMap) {
+                PacketMap packet = (PacketMap) object;
+
+                TileMap tileMap = new TileMap();
+                tileMap.map = new Tile[packet.map.length][packet.map[0].length];
+
+                for (int x = 0; x < packet.map.length; x++) {
+                    for (int y = 0; y < packet.map[x].length; y++) {
+                        PacketTile tile = packet.map[x][y];
+
+                        tileMap.map[x][y] = new Tile(tile.location, tile.x, tile.y);
+                    }
+                }
+                MainClient.tileMap = tileMap;
+
+            }
+        });
 
         if (object instanceof PacketLogout) {
             PacketLogout packet = (PacketLogout) object;

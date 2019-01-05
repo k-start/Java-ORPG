@@ -11,10 +11,15 @@ public class MainServer {
 
 	public static Server server;
 	public static EntityHandler entityHandler;
+	public static TileMapHandler mapHandler;
 	public static Database database;
 
 	public static void main(String[] args) throws IOException {
         entityHandler = new EntityHandler();
+        mapHandler = new TileMapHandler();
+
+        TileMap map = new TileMap(10, 10);
+        mapHandler.setMap(0, map);
 
 		database = new Database("serverDB.db");
 		try {

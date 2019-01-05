@@ -24,6 +24,8 @@ public class MainClient extends Game {
 	public static int tileSize = 32;
 
 	private float connectionTimer = 5;
+
+	public static TileMap tileMap;
 	
 	@Override
 	public void create () {

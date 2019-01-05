@@ -9,10 +9,13 @@ public class GameScreen implements Screen {
 
 	private Game game;
 	private SpriteBatch batch;
+
+	private TileMap map;
 	
 	public GameScreen(Game game) {
 		this.game = game;
 		batch = new SpriteBatch();
+		map = MainClient.tileMap;
 	}
 	
 	@Override
@@ -25,6 +28,12 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		batch.setProjectionMatrix(MainClient.cam.combined);
 		batch.begin();
+
+		if(map != null) {
+			map.render(batch, delta);
+		}else{
+			map = MainClient.tileMap;
+		}
 		
 		for(EntityPlayer p : MainClient.entityHandler.getPlayers()) {
 			p.render(batch, delta);

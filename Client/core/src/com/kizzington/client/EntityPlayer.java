@@ -74,7 +74,7 @@ public class EntityPlayer extends Entity {
 
         font.getData().setScale(1, -1);
         font.setColor(Color.WHITE);
-        font.draw(batch, username, getScreenX() + 32/2 - textWidth/2, getScreenY() - textHeight - 2);
+        font.draw(batch, username, getScreenX() + 32/2 - textWidth/2, getScreenY() - textHeight - 18);
 
         super.render(batch, delta);
     }

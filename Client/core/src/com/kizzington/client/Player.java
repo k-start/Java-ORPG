@@ -29,7 +29,6 @@ public class Player extends EntityPlayer implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println("asdasd");
         switch (keycode) {
             case Input.Keys.W:
                 sendMovement(3);
