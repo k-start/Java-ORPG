@@ -124,6 +124,11 @@ public class PacketListener extends Listener {
 
         }
 
+        if(object instanceof PacketMap){
+            PacketMap packet = (PacketMap) object;
+            server.sendToAllTCP(packet);
+        }
+
         if(object instanceof PacketMove) {
             if(!connection.getPlayer().isMoving()) {
                 connection.getPlayer().setMoving(true);
@@ -148,6 +153,8 @@ public class PacketListener extends Listener {
                 }, 500);
             }
         }
+
+
     }
 
     public void disconnected(Connection c) {

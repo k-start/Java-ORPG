@@ -46,7 +46,7 @@ public class MainClient extends Game {
 		packetListener.registerPackets();
 	    
 	    try {
-			client.connect(5000, "127.0.0.1", 54555, 54777);
+			client.connect(5000, "192.168.0.12", 54555, 54777);
 		} catch (IOException e) { System.out.println("Unable to connect, retrying in 5 seconds"); }
 
 		client.addListener(packetListener);

@@ -30,6 +30,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 
 		if(map != null) {
+			map = MainClient.tileMap;
 			map.render(batch, delta);
 		}else{
 			map = MainClient.tileMap;

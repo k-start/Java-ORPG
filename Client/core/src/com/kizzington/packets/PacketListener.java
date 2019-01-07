@@ -96,8 +96,11 @@ public class PacketListener extends Listener{
                 for (int x = 0; x < packet.map.length; x++) {
                     for (int y = 0; y < packet.map[x].length; y++) {
                         PacketTile tile = packet.map[x][y];
-
-                        tileMap.map[x][y] = new Tile(tile.location, tile.x, tile.y);
+                        if(tile != null) {
+                            tileMap.map[x][y] = new Tile(tile.location, tile.x, tile.y);
+                        }else{
+                            tileMap.map[x][y] = null;
+                        }
                     }
                 }
                 MainClient.tileMap = tileMap;
