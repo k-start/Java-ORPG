@@ -1,18 +1,18 @@
 package sample;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.nio.file.Path;
+import java.util.Collection;
 
 public class Main extends Application {
 
-    public static Scene scene;
+    private Scene scene;
+    public static Collection<Path> tilesets;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -24,6 +24,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+
+
     }
 
 

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -57,29 +58,33 @@
          <children>
             <SplitPane dividerPositions="0.25" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
-                  <Accordion>
-                    <panes>
-                      <TitledPane animated="false" text="untitled 1">
+                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Tiles">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Canvas fx:id="tilemapCanvas" height="200.0" onMouseClicked="#tilemapClicked" width="230.0" AnchorPane.leftAnchor="-9.599999999999994" AnchorPane.rightAnchor="0.0" />
+                                    <ChoiceBox fx:id="tileset" prefWidth="150.0" AnchorPane.topAnchor="5.0" onAction="#tilesetChanged"/>
+                                    <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                                      <content>
+                                        <AnchorPane fx:id="tilesetPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Canvas fx:id="tilemapCanvas" height="200.0" onMouseClicked="#tilemapClicked" width="230.0" />
+                                             </children>
+                                          </AnchorPane>
+                                      </content>
+                                    </ScrollPane>
                                  </children>
                               </AnchorPane>
                         </content>
-                      </TitledPane>
-                      <TitledPane animated="false" text="untitled 2">
+                      </Tab>
+                      <Tab text="Attributes">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>
-                      </TitledPane>
-                      <TitledPane animated="false" text="untitled 3">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </TitledPane>
-                    </panes>
-                  </Accordion>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
                   <ScrollPane hvalue="0.5" prefHeight="200.0" vvalue="0.5">
                     <content>
                       <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="1080.0" prefWidth="1920.0">

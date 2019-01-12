@@ -1,11 +1,11 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,7 +13,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
     @FXML
@@ -27,11 +31,17 @@ public class Controller implements Initializable {
 
     @FXML
     public Canvas tilemapCanvas;
+    @FXML
+    public AnchorPane tilesetPane;
     public GraphicsContext gcTM;
 
-    Image currentTileset = new Image("File:tilesets/Tileset1.png");
+    @FXML public ChoiceBox tileset;
+
+    public String currentTileset = "Tileset1.png";
+    Image currentTilesetImg = new Image("File:tilesets/" + currentTileset);
 
     private int selectedX = 0, selectedY = 0;
+    private int i = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,22 +64,55 @@ public class Controller implements Initializable {
         }.start();
 
         tileMap = new TileMap(20, 20);
-        //tileMap.addTile(new Tile("Tileset1.png", 0, 0), 0, 0);
 
-
-
-
-        tilemapCanvas.setHeight(currentTileset.getHeight());
-        tilemapCanvas.setWidth(currentTileset.getWidth());
+        tilemapCanvas.setHeight(currentTilesetImg.getHeight());
+        tilemapCanvas.setWidth(currentTilesetImg.getWidth());
+        tilesetPane.setPrefHeight(currentTilesetImg.getHeight());
+        tilesetPane.setPrefWidth(currentTilesetImg.getWidth());
 
         drawSelection(gcTM, selectedX, selectedY);
+
+        try {
+            Main.tilesets = Files.walk(Paths.get("tilesets/"))
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+        }catch (Exception e) {}
+
+        ArrayList<String> test = new ArrayList<>();
+
+        for(Path p: Main.tilesets){
+            test.add(p.toString().split("\\\\")[1]);
+        }
+
+        tileset.getItems().addAll(test);
+        tileset.setValue("Tileset1.png");
+
+
     }
+
+    @FXML
+    private void tilesetChanged(){
+        i++;
+        System.out.println("asd");
+        if(i > 1) {
+            currentTileset = tileset.getSelectionModel().getSelectedItem().toString();
+            currentTilesetImg = new Image("File:tilesets/" + currentTileset);
+
+            tilemapCanvas.setHeight(currentTilesetImg.getHeight());
+            tilemapCanvas.setWidth(currentTilesetImg.getWidth());
+            tilesetPane.setPrefHeight(currentTilesetImg.getHeight());
+            tilesetPane.setPrefWidth(currentTilesetImg.getWidth());
+
+            drawSelection(gcTM, selectedX, selectedY);
+        }
+    }
+
 
     @FXML
     private void canvasClicked(MouseEvent e){
         if(e.getButton() == MouseButton.PRIMARY){
         //if(e.isPrimaryButtonDown()) {
-            tileMap.addTile(new Tile("Tileset1.png", selectedX, selectedY), (int) e.getX()/32 - tileMap.screenX/32, (int) e.getY()/32 - tileMap.screenY/32);
+            tileMap.addTile(new Tile(currentTileset, selectedX, selectedY), (int) e.getX()/32 - tileMap.screenX/32, (int) e.getY()/32 - tileMap.screenY/32);
         }else if(e.getButton() == MouseButton.SECONDARY){
             tileMap.addTile(null, (int) e.getX()/32 - tileMap.screenX/32, (int) e.getY()/32 - tileMap.screenY/32);
         }
@@ -103,7 +146,7 @@ public class Controller implements Initializable {
 
     public void drawSelection(GraphicsContext gc, int x, int y){
         gc.clearRect(0, 0, tilemapCanvas.getWidth(), tilemapCanvas.getHeight());
-        gc.drawImage(currentTileset, 0,0 );
+        gc.drawImage(currentTilesetImg, 0,0 );
         gc.setStroke(Color.RED);
 
         gc.strokeRect(selectedX*32, selectedY*32, 32, 32);
