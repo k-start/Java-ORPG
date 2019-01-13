@@ -1,5 +1,6 @@
 package sample;
 
+import com.jfoenix.controls.JFXComboBox;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,7 +36,7 @@ public class Controller implements Initializable {
     public AnchorPane tilesetPane;
     public GraphicsContext gcTM;
 
-    @FXML public ChoiceBox tileset;
+    @FXML public JFXComboBox tileset;
 
     public String currentTileset = "Tileset1.png";
     Image currentTilesetImg = new Image("File:tilesets/" + currentTileset);
@@ -81,7 +82,8 @@ public class Controller implements Initializable {
         ArrayList<String> test = new ArrayList<>();
 
         for(Path p: Main.tilesets){
-            test.add(p.toString().split("\\\\")[1]);
+            test.add(p.toString().split("/")[1]);
+            System.out.println(p);
         }
 
         tileset.getItems().addAll(test);
@@ -94,7 +96,7 @@ public class Controller implements Initializable {
     private void tilesetChanged(){
         i++;
         System.out.println("asd");
-        if(i > 1) {
+        if(i >= 1) {
             currentTileset = tileset.getSelectionModel().getSelectedItem().toString();
             currentTilesetImg = new Image("File:tilesets/" + currentTileset);
 
