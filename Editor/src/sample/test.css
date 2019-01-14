@@ -1,5 +1,5 @@
 * {
-    -fx-primary : #2A2E37;
+    -fx-primary : #212121;
     -fx-secondary : #90CAF9;
     -fx-primarytext : #B2B2B2;
     -fx-blue: #1976D2;
@@ -92,6 +92,18 @@
     -fx-font-size: 14;
     -fx-base : -fx-primary;
     -fx-background-color: -fx-primary;
+}
+
+.menu .label {
+  -fx-text-fill: -fx-primarytext;
+}
+
+.menu:hover, .menu:showing {
+  -fx-background-color: derive(-fx-primary, 20%);
+}
+
+.menu-item:hover {
+  -fx-background-color: derive(-fx-primary, 50%);
 }
 
 .context-menu
@@ -252,10 +264,15 @@
 }
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb{
-    -fx-background-color: derive(-fx-primary, 60%);
+    -fx-background-color: derive(-fx-primary, 50%);
     -fx-border-color: transparent;
     -fx-background-radius: 5em;
 }
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: derive(-fx-primary, 60%);
+}
+
 .table-view .filler{
     -fx-fill: -fx-primary;
     -fx-background-color: -fx-primary;
@@ -345,12 +362,43 @@
     -fx-fill: -fx-primary;
 }
 
+
+/* ScrollPane */
+.scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane {
+  -fx-background-color: derive(-fx-primary, 10%);
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+  -fx-background-color: transparent;
+}
+
+.scroll-pane > .corner {
+  -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+  -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+  -fx-padding: -10;
+}
+
+.split-pane-divider {
+  -fx-background-color: derive(-fx-primary, 20%);
+  -fx-padding: 1 ;
+}
+
 AnchorPane {
   -fx-background-color: -fx-primary;
 }
 
 .jfx-tab-pane .tab-selected-line {
-    -fx-background-color: -fx-secondary;
+  -fx-background-color: -fx-secondary;
 }
 
 .jfx-combo-box {
@@ -363,10 +411,7 @@ AnchorPane {
     -fx-borer-color: -fx-primary;
 }
 
-.scroll-pane > .viewport {
-   -fx-background-color: transparent;
-}
-
-.scroll-pane {
-   -fx-background-color: derive(-fx-primary, 10%);
+/* border around splitpane */
+.split-pane {
+    -fx-box-border: derive(-fx-primary, 20%);
 }
