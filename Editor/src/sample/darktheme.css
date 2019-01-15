@@ -388,11 +388,6 @@
   -fx-padding: -10;
 }
 
-.split-pane-divider {
-  -fx-background-color: derive(-fx-primary, 20%);
-  -fx-padding: 1 ;
-}
-
 AnchorPane {
   -fx-background-color: -fx-primary;
 }
@@ -414,4 +409,9 @@ AnchorPane {
 /* border around splitpane */
 .split-pane {
     -fx-box-border: derive(-fx-primary, 20%);
+}
+
+.split-pane-divider {
+  -fx-background-color: derive(-fx-primary, 20%);
+  -fx-padding: 0 1 0 0;
 }

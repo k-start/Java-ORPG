@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@test.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@darktheme.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <MenuBar>
         <menus>
@@ -45,17 +45,17 @@
                            <tabs>
                               <Tab styleClass="jfx-tab-pane" text="Tilemap">
                                 <content>
-                                  <AnchorPane fx:id="tilesetPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
                                           <Text fill="#b2b2b2" strokeType="OUTSIDE" strokeWidth="0.0" text="Tileset: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="18.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <JFXComboBox fx:id="tileset" layoutX="14.0" layoutY="14.0" onAction="#tilesetChanged" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                                          <JFXComboBox fx:id="tilesetCombo" layoutX="14.0" layoutY="14.0" onAction="#tilesetChanged" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                           <ScrollPane prefHeight="200.0" prefWidth="288.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="52.0">
                                              <content>
-                                                <Canvas fx:id="tilemapCanvas" height="200.0" onMouseClicked="#tilemapClicked" width="200.0" />
+                                                <Canvas fx:id="tilesetCanvas" height="200.0" onMouseClicked="#tilesetClicked" width="200.0" />
                                              </content>
                                           </ScrollPane>
                                        </children>
@@ -73,11 +73,7 @@
                   </AnchorPane>
                   <ScrollPane hvalue="0.5" prefHeight="200.0" prefWidth="200.0" vvalue="0.5">
                      <content>
-                      <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="1080.0" prefWidth="1920.0">
-                           <children>
-                              <Canvas fx:id="mainCanvas" height="1080.0" onMouseClicked="#canvasClicked" onMouseDragged="#canvasClicked" width="1920.0" />
-                           </children>
-                        </AnchorPane>
+                        <Canvas fx:id="mainCanvas" height="1080.0" onMouseClicked="#canvasClicked" onMouseDragged="#canvasClicked" width="1920.0" />
                      </content>
                   </ScrollPane>
               </items>

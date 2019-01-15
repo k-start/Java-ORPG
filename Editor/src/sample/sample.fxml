@@ -64,12 +64,12 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <ChoiceBox fx:id="tileset" prefWidth="150.0" AnchorPane.topAnchor="5.0" onAction="#tilesetChanged"/>
+                                    <ChoiceBox fx:id="tilesetCombo" prefWidth="150.0" AnchorPane.topAnchor="5.0" onAction="#tilesetChanged"/>
                                     <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
                                       <content>
                                         <AnchorPane fx:id="tilesetPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                                              <children>
-                                                <Canvas fx:id="tilemapCanvas" height="200.0" onMouseClicked="#tilemapClicked" width="230.0" />
+                                                <Canvas fx:id="tilesetCanvas" height="200.0" onMouseClicked="#tilesetClicked" width="230.0" />
                                              </children>
                                           </AnchorPane>
                                       </content>
